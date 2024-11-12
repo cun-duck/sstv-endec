@@ -1,6 +1,5 @@
 import streamlit as st
 import numpy as np
-import sounddevice as sd
 import scipy.io.wavfile as wav
 from pysstv.color import MartinM1
 from PIL import Image
@@ -12,46 +11,19 @@ st.title("SSTV Encoder & Decoder")
 # Section 1: SSTV Decoder (Suara ke Gambar)
 st.header("SSTV Decoder (Suara ke Gambar)")
 
-# Pilihan input untuk decoder: upload file atau rekam dari mikrofon
-input_option = st.radio("Pilih metode input suara:", ("Unggah File Audio", "Rekam dari Mikrofon"))
-
-if input_option == "Unggah File Audio":
-    # Upload file audio untuk didekode
-    uploaded_file = st.file_uploader("Upload SSTV Audio File (WAV)", type=["wav"])
-    if uploaded_file is not None:
-        # Membaca file audio
-        wav_data = io.BytesIO(uploaded_file.read())
-        wav_file = wav.open(wav_data, 'rb')
-        
-        # Dekode sinyal audio ke gambar
-        sstv = MartinM1(wav_file)
-        sstv_image = sstv.decode()
-        
-        # Tampilkan gambar yang didekode
-        st.image(sstv_image, caption="Decoded SSTV Image")
-
-elif input_option == "Rekam dari Mikrofon":
-    duration = st.slider("Durasi Rekaman (detik)", 1, 10, 5)  # Durasi rekaman
-    fs = 44100  # Frekuensi sampling
-
-    if st.button("Mulai Rekam"):
-        # Rekam audio
-        st.write("Merekam...")
-        audio_data = sd.rec(int(duration * fs), samplerate=fs, channels=1, dtype='int16')
-        sd.wait()  # Tunggu hingga rekaman selesai
-
-        # Simpan rekaman sebagai file WAV dalam memori
-        wav_data = io.BytesIO()
-        wav.write(wav_data, fs, audio_data)
-        wav_data.seek(0)
-
-        # Dekode sinyal audio ke gambar
-        wav_file = wav.open(wav_data, 'rb')
-        sstv = MartinM1(wav_file)
-        sstv_image = sstv.decode()
-
-        # Tampilkan gambar yang didekode
-        st.image(sstv_image, caption="Decoded SSTV Image")
+# Input file audio untuk didekode
+uploaded_file = st.file_uploader("Upload SSTV Audio File (WAV)", type=["wav"])
+if uploaded_file is not None:
+    # Membaca file audio
+    wav_data = io.BytesIO(uploaded_file.read())
+    wav_file = wav.open(wav_data, 'rb')
+    
+    # Dekode sinyal audio ke gambar
+    sstv = MartinM1(wav_file)
+    sstv_image = sstv.decode()
+    
+    # Tampilkan gambar yang didekode
+    st.image(sstv_image, caption="Decoded SSTV Image")
 
 # Section 2: SSTV Encoder (Gambar ke Suara)
 st.header("SSTV Encoder (Gambar ke Suara)")

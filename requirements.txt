@@ -1,0 +1,8 @@
+streamlit
+numpy
+scipy
+pysstv
+pillow
+pydub
+sounddevice
+ffmpeg
